@@ -1,0 +1,49 @@
+logging:
+  level:
+    org.springframework.web: INFO
+    com.github.binarywang.demo.wx.mp: DEBUG
+    me.chanjar.weixin: DEBUG
+
+wx:
+  mp:
+    configs:
+      - appId: wx751d1e03d0988cb3
+        secret: 1a66d5271b3df88bd9a1db6e515602d3
+        token: warelucent
+        aesKey: Mz58ggiIl6IGOKHJ6Bs1ldUl2F1BJLTSVyOEaofgTnr
+
+
+
+database:
+  postmain:
+    url: jdbc:sqlserver://127.0.0.1:1433;databaseName=Posmanagement_main
+    username: sa
+    password: 123456
+    driverClassName: com.microsoft.sqlserver.jdbc.SQLServerDriver
+    validationQuery: SELECT 'x'
+    testWhileIdle: true
+server:
+  tomcat:
+    uri-encoding: UTF-8
+  servlet:
+    context-path: /hlwxmp
+  port: 8081
+
+
+spring:
+ resources:
+   static-locations: classpath:/testStatic/,classpath:/META-INF/resources/,classpath:/resources/,classpath:/static/,classpath:/public/,classpath:/templates/
+ thymeleaf:
+   cache: false
+   prefix: classpath:/templates/
+   encoding: UTF-8
+   servlet:
+     content-type: text/html
+ mvc:
+   favicon:
+     enabled: false
+ http:
+   encoding:
+     charset: utf-8
+     enabled: true
+     force: true

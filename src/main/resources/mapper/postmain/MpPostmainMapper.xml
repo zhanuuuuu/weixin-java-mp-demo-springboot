@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd" >
+<mapper namespace="com.github.binarywang.demo.wx.mp.dao.MpPostmainDao">
+
+    <resultMap id="VipResultMap" type="com.github.binarywang.demo.wx.mp.domain.VipEntity">
+        <result column="cVipno" property="vipNo" />
+        <result column="cVipName" property="vipName" />
+        <result column="dValidStart" property="validStartTime" />
+        <result column="dValidEnd" property="validEndTime" />
+        <result column="fCurValue" property="integration" />
+        <result column="cStoreNo" property="storeNo" />
+        <result column="cStore" property="storeName" />
+        <result column="fMoney_Left" property="balance" />
+        <result column="cWeixinID" property="openID" />
+    </resultMap>
+
+    <sql id="VIP_COLUMN_LIST">
+        cVipno, cVipName, dValidStart, dValidEnd, fCurValue=CAST(fCurValue AS NUMERIC(20,0)), cStoreNo, cStore, fMoney_Left, cWeixinID
+    </sql>
+
+    <select id="queryByVipNo" resultMap="VipResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="VIP_COLUMN_LIST" />
+        FROM
+        t_Vip
+        WHERE cVipno = #{vipNo}
+    </select>
+
+
+    <select id="queryByWxCardIDAndCode" resultMap="VipResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="VIP_COLUMN_LIST" />
+        FROM
+        t_Vip
+        WHERE wxMemberCard_id = #{cardID} AND wxMemberCard_code = #{wxCode}
+    </select>
+
+    <select id="validateUser" resultMap="VipResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="VIP_COLUMN_LIST" />
+        FROM
+        t_Vip
+        WHERE cVipno = #{vipNo} AND wxActivatePwd = #{password}
+    </select>
+
+    <select id="queryByOpenID" resultMap="VipResultMap" parameterType="java.lang.String">
+        SELECT
+        <include refid="VIP_COLUMN_LIST" />
+        FROM
+        t_Vip
+        WHERE cWeixinId = #{openID}
+    </select>
+
+    <select id="isBindOpenId" parameterType="java.lang.String" resultType="java.lang.Integer">
+        select wxIsBind
+        from t_Vip
+        WHERE cVipno = #{vipNo};
+    </select>
+    <update id="bindOpenID">
+        UPDATE t_Vip SET cWeixinId = #{openID}
+        WHERE cVipno = #{vipNo}
+    </update>
+
+    <update id="cardBindAction" parameterType="java.lang.String">
+        UPDATE t_Vip SET cWeixinId = #{openID}, wxMemberCard_id = #{cardID}, wxMemberCard_code = #{code},  cTel = #{phone}, wxIsBind = 1
+        WHERE cVipno = #{vipNo}
+    </update>
+
+    <insert id="insertUserCodeWithOpenid" parameterType="java.lang.String">
+        insert into t_WxMemberCard(wx_card_userCode, wx_card_id, wx_openid)
+        values(#{userCode}, #{cardID},#{openID});
+    </insert>
+
+</mapper>

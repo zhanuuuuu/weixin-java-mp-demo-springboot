@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html lang="zh_CN"
+      xmlns="http://www.w3.org/1999/xhtml"
+      xmlns:th="http://www.thymeleaf.org">
+<head>
+    <title>激活会员卡</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0, user-scalable=no, minimal-ui"/>
+    <meta name="screen-orientation" content="portrait"/>
+    <meta name="apple-mobile-web-app-capable" content="yes"/>
+    <meta name="format-detection" content="telephone=no"/>
+    <meta name="full-screen" content="yes"/>
+    <meta name="x5-fullscreen" content="true"/>
+    <link rel="shortcut icon" th:href="@{/images/favicon.ico}">
+    <link rel="stylesheet" th:href="@{/css/weui.min.css}">
+    <link rel="stylesheet" th:href="@{/css/activate.css}">
+
+</head>
+<body>
+<div class="wrapper">
+    <div class="weui-cells__title">会员卡激活</div>
+    <div class="weui-cells weui-cells_form">
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">卡号</label></div>
+            <div class="weui-cell__bd">
+                <input id="vipno_value" class="weui-input" type="text" placeholder="请输入卡号"/>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">密码</label></div>
+            <div class="weui-cell__bd">
+                <input id="password_value" class="weui-input" type="password" placeholder="请输入密码"/>
+            </div>
+        </div>
+        <div class="weui-cell">
+            <div class="weui-cell__hd"><label class="weui-label">手机号</label></div>
+            <div class="weui-cell__bd">
+                <input id="phone_value" class="weui-input" type="tel" pattern="[0-9]*" placeholder="请输入手机号"/>
+            </div>
+        </div>
+    </div>
+    <div class="weui-cells__tips">华隆创信科技有限公司</div>
+    <div class="button-sp-area">
+        <a href="javascript:void(0);" class="weui-btn weui-btn_primary" id="activateBtn">激活会员卡</a>
+    </div>
+    <div class="button-sp-area">
+        <a href="javascript:void(0);" class="weui-btn weui-btn_primary" id="Scan">扫码加积分</a>
+    </div>
+    <div class="weui-msg__extra-area">
+        <div class="weui-footer">
+            <p class="weui-footer__links">
+                <!--<a href="javascript:void(0);" class="weui-footer__link">底部链接文本</a>-->
+            </p>
+            <p class="weui-footer__text">Copyright &copy; 2016-2018 华隆创信科技有限公司</p>
+        </div>
+    </div>
+</div>
+
+<script type="text/javascript" th:src="@{/js/weui.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/jweixin-1.4.0.js}"></script>
+<script type="text/javascript" th:src="@{/js/jquery-3.2.1.min.js}"></script>
+<script type="text/javascript" th:src="@{/js/zepto.min.js}"></script>
+<script th:inline="javascript">
+    $(function () {
+        var rootUrl=[[${#httpServletRequest.getContextPath()}]];
+        var opendId=[[${opendId}]];
+        console.log("当前项目的路径"+rootUrl);
+        console.log("当前项目的opendId"+opendId);
+
+
+        $('#Scan').on('click', function () {
+            //alert(location.href.split('#')[0])
+            $.ajax({
+                type: 'POST',
+                url: rootUrl+'/mapper/getJsconfig',
+                data: {"signUrl":location.href.split('#')[0]},
+                success: function (data) {
+                    console.log("获取到的结果集："+data);
+                    var var0 = JSON.parse(data);
+                    if(var0.code!="1001"){
+                        alert(var0.message)
+                        return;
+                    }
+
+                    var var1 = JSON.parse(var0.result);
+                    //签名
+                    console.log("appId："+var1.appId);
+                    wx.config({
+                        debug: false,
+                        appId: var1.appId,
+                        timestamp: var1.timestamp,
+                        nonceStr: var1.nonceStr,
+                        signature: var1.signature,
+                        jsApiList: ["checkJsApi", "scanQRCode"]
+                    });
+                    wx.error(function (res) {
+                        alert("扫码出错:" + res.errMsg);
+                    });
+
+                    wx.ready(function () {
+                        wx.checkJsApi({
+                            jsApiList: ['scanQRCode'],
+                            success: function (res) {
+                                console.log(res);
+                            }
+                        });
+                        wx.scanQRCode({
+                            needResult: 1,
+                            scanType: ["qrCode", "barCode"],
+                            success: function (res) {
+                                var result = res.resultStr;
+                                alert(result)
+
+                            },
+                        });
+                    });
+
+                },
+                error: function () {
+                    weui.topTips("网络连接异常");
+                    return;
+                }
+            });
+        })
+
+        $('#activateBtn').on('click', function () {
+            console.log("Hello, 激活按钮被点击");
+            var vipNo = $(" #vipno_value ").val();//document.getElementById("vipno_value").value;
+            var password =$(" #password_value").val();// document.getElementById("password_value").value;
+            var phone = $(" #phone_value").val();//document.getElementById("phone_value").value;
+            console.log(vipNo, "====\n", password, "=====\n", phone, "======");
+            var inputs = [
+                {"content": vipNo, "exception": "会员卡号不能为空", "id": 1},
+                {"content": password, "exception": "密码不能为空", "id": 2},
+                {"content": phone, "exception": "手机号不能为空", "id": 3}
+            ];
+
+            try {
+                inputs.forEach(function (element) {
+                    if (Utils.isNullString(element.content)) {
+                        throw new Error(element.exception);
+                    }
+                    if (element.id === 1 && Utils.isNotFullDigit(element.content)) {
+                        throw new Error("会员卡号不能包含非数字");
+                    }
+                    if (element.id === 3 && Utils.isNotPhone(element.content)) {
+                        throw new Error("手机号格式不正确");
+                    }
+                });
+                var loading = weui.loading('正在激活', {
+                    className: 'binding'
+                });
+
+                $.ajax({
+                    type: 'POST',
+                    url: rootUrl+'/mapper/bindtest',
+                    data: {"opendId":opendId},
+                    success: function (data) {
+                        var o = JSON.parse(data);
+                        console.log("获取到的结果集："+data);
+                        console.log("获取到的结果集code："+o.code);
+                        console.log("获取到的结果集message："+o.message);
+                        console.log("获取到的结果集result："+o.result);
+
+                        var result = JSON.parse(o.result);
+                        result.forEach(function (elment) {
+                            console.log("获取到的结果集elment："+elment.nickname);
+                        })
+                        loading.hide(function () {
+                                weui.toast('绑定成功', {
+                                    duration: 2000,
+                                    className: 'bind-success',
+                                    callback: function () {
+
+                                    }
+                                });
+                            });
+
+                    },
+                    error: function () {
+                        weui.topTips("网络连接异常");
+                        return;
+                    }
+                });
+
+//                $.ajax({
+//                    type: 'POST',
+//                    url: '/mpwx/wechat/card/activate',
+//                    data: JSON.stringify({
+//                        card_id: [[${cardID}]],
+//                        encrypt_code: [[${encryptCode}]],
+//                        openid: [[${openID}]],
+//                        vipNo: vipNo,
+//                        password: password,
+//                        phone: phone
+//                    }),
+//                    contentType: 'application/json',
+//                    success: function (data) {
+//                        var code = data.code;
+//                        if (Utils.isInteger(code) && code === 200) {
+//                            loading.hide(function () {
+//                                weui.toast('绑定成功', {
+//                                    duration: 2000,
+//                                    className: 'bind-success',
+//                                    callback: function () {
+//                                        //微信浏览器内置的关闭当前窗口的方法
+//                                        WeixinJSBridge.call('closeWindow');
+//                                    }
+//                                });
+//                            });
+//
+//                        } else {
+//                            window.location.href = "/mpwx/activate/fail?code=" + data.code + "&message=" + data.message;
+//                        }
+//                    },
+//                    error: function () {
+//                        weui.topTips("网络连接异常");
+//                        return;
+//                    }
+//                });
+            } catch (e) {
+                weui.topTips(e.message);
+                return;
+            }
+        });
+    });
+
+
+    var Utils = {
+        isInteger: function (obj) {
+            return typeof  obj === 'number' && obj % 1 === 0;
+        },
+        isNullString: function (str) {
+            console.log(str);
+            return typeof str === 'undefined' || str.replace(/(^s*)|(s*$)/g, "").length === 0;
+        },
+        isPhone: function (phone) {
+            var telReg = /^1[3|4|5|7|8][0-9]{9}$/;
+            return telReg.test(phone);
+        },
+        isNotPhone: function (phone) {
+            return !this.isPhone(phone);
+        },
+        isDigit: function (str) {
+            var digitReg = /^[0-9]*$/ ;
+            return digitReg.test(str);
+        },
+        isNotFullDigit: function (str) {
+            return !this.isDigit(str);
+        }
+    };
+</script>
+
+</body>
+</html>
+
