@@ -58,7 +58,7 @@ public class myMapsend {
 
         try {
             String JsapiTicket=this.wxService.getJsapiTicket();
-            log.info("我是JsapiTicket{}",JsapiTicket);
+            log.info("我是JsapiTicket   {}",JsapiTicket);
             //"http://aaa.warelucent.cc/hlwxmp/mapper/activate?opendId=89"
             WxJsapiSignature wxJsapiSignature=this.wxService.createJsapiSignature(signUrl);
             log.info("我是wxJsapiSignature{}",wxJsapiSignature);
