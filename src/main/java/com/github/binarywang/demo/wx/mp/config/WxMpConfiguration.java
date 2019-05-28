@@ -39,7 +39,7 @@ public class WxMpConfiguration {
     private final SubscribeHandler subscribeHandler;
     private final ScanHandler scanHandler;
     private final WxMpProperties properties;
-
+    private final MemberCardHandler memberCardHandler;
     @Bean
     public WxMpService wxMpService() {
         // 代码里 getConfigs()处报错的同学，请注意仔细阅读项目说明，你的IDE需要引入lombok插件！！！！
@@ -116,6 +116,9 @@ public class WxMpConfiguration {
         newRouter.rule().async(false).msgType(XmlMsgType.EVENT)
             .event(EventType.SCAN).handler(this.scanHandler).end();
 
+        //跳转会员卡  memberCardHandler
+        newRouter.rule().async(false).msgType(XmlMsgType.EVENT)
+            .event(EventType.CARD_USER_VIEW_CARD).handler(this.memberCardHandler).end();
         // 默认
         newRouter.rule().async(false).handler(this.msgHandler).end();
 

@@ -11,7 +11,7 @@ public class FileUtils {
     private static final Logger logger = LoggerFactory.getLogger(HttpUtils.class);
 
     public static void main(String[] args) {
-        String str = readJSONFromResource("json/test.json");
+        String str = readJSONFromResource("cs/test.json");
         System.out.println(str);
     }
 

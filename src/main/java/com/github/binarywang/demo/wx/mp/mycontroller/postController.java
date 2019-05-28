@@ -27,6 +27,20 @@ public class postController {
 
     private final WxMpService wxService;
 
+    @RequestMapping("/getTocken")
+    @ResponseBody
+    public String getTocken() {
+
+        String token="";
+        try {
+            token=wxService.getAccessToken();
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        log.info(String.format("Tocken:  %s",token));
+
+        return String.format("Tocken:  %s",token);
+    }
     @RequestMapping("/test/{appid}")
     @ResponseBody
     public String test(@PathVariable String appid , HttpServletRequest request) {
