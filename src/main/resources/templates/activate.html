@@ -45,6 +45,10 @@
     <div class="button-sp-area">
         <a href="javascript:void(0);" class="weui-btn weui-btn_primary" id="Scan">扫码加积分</a>
     </div>
+
+    <div class="button-sp-area">
+        <a href="javascript:void(0);" class="weui-btn weui-btn_primary" id="AddCard">领取会员卡</a>
+    </div>
     <div class="weui-msg__extra-area">
         <div class="weui-footer">
             <p class="weui-footer__links">
@@ -63,16 +67,107 @@
     $(function () {
         var rootUrl=[[${#httpServletRequest.getContextPath()}]];
         var opendId=[[${opendId}]];
+        var card_id="pgOfAwsyCZK29C3mm80CwHIiy8Iw";
         console.log("当前项目的路径"+rootUrl);
         console.log("当前项目的opendId"+opendId);
 
+        $.ajax({
+            type: 'POST',
+            url: rootUrl+'/mapper/getJsconfig',
+            data: {"signUrl":location.href.split('#')[0]},
+            success: function (data) {
+                console.log("获取到的结果集："+data);
+                var var0 = JSON.parse(data);
+                if(var0.code!="1001"){
+                    alert(var0.message)
+                    return;
+                }
+
+                var var1 = JSON.parse(var0.result);
+                //签名
+                console.log("appId："+var1.appId);
+                wx.config({
+                    debug: true,
+                    appId: var1.appId,
+                    timestamp: var1.timestamp,
+                    nonceStr: var1.nonceStr,
+                    signature: var1.signature,
+                    jsApiList: [
+                        'checkJsApi',
+                        'onMenuShareTimeline',
+                        'onMenuShareAppMessage',
+                        'onMenuShareQQ',
+                        'onMenuShareWeibo',
+                        'onMenuShareQZone',
+                        'hideMenuItems',
+                        'showMenuItems',
+                        'hideAllNonBaseMenuItem',
+                        'showAllNonBaseMenuItem',
+                        'translateVoice',
+                        'startRecord',
+                        'stopRecord',
+                        'onVoiceRecordEnd',
+                        'playVoice',
+                        'onVoicePlayEnd',
+                        'pauseVoice',
+                        'stopVoice',
+                        'uploadVoice',
+                        'downloadVoice',
+                        'chooseImage',
+                        'previewImage',
+                        'uploadImage',
+                        'downloadImage',
+                        'getNetworkType',
+                        'openLocation',
+                        'getLocation',
+                        'hideOptionMenu',
+                        'showOptionMenu',
+                        'closeWindow',
+                        'scanQRCode',
+                        'chooseWXPay',
+                        'openProductSpecificView',
+                        'addCard',
+                        'chooseCard',
+                        'openCard'
+                    ]
+                });
+                wx.error(function (res) {
+                    alert("微信网页JS授权失败:" + res.errMsg);
+                });
+            },
+            error: function () {
+                weui.topTips("网络连接异常");
+                return;
+            }
+        });
 
         $('#Scan').on('click', function () {
             //alert(location.href.split('#')[0])
+            wx.ready(function () {
+                wx.checkJsApi({
+                    jsApiList: ['scanQRCode'],
+                    success: function (res) {
+                        console.log(res);
+                    }
+                });
+                wx.scanQRCode({
+                    needResult: 1,
+                    scanType: ["qrCode", "barCode"],
+                    success: function (res) {
+                        var result = res.resultStr;
+                        alert(result)
+
+                    },
+                });
+            });
+        })
+        //会员卡领取AddCard
+        $('#AddCard').on('click', function () {
+
             $.ajax({
                 type: 'POST',
-                url: rootUrl+'/mapper/getJsconfig',
-                data: {"signUrl":location.href.split('#')[0]},
+                url: rootUrl+'/mapper/getJsCardconfig',
+                data: {"card_id":card_id},
                 success: function (data) {
                     console.log("获取到的结果集："+data);
                     var var0 = JSON.parse(data);
@@ -80,39 +175,24 @@
                         alert(var0.message)
                         return;
                     }
-
                     var var1 = JSON.parse(var0.result);
                     //签名
-                    console.log("appId："+var1.appId);
-                    wx.config({
-                        debug: false,
-                        appId: var1.appId,
-                        timestamp: var1.timestamp,
-                        nonceStr: var1.nonceStr,
-                        signature: var1.signature,
-                        jsApiList: ["checkJsApi", "scanQRCode"]
-                    });
-                    wx.error(function (res) {
-                        alert("扫码出错:" + res.errMsg);
-                    });
-
-                    wx.ready(function () {
-                        wx.checkJsApi({
-                            jsApiList: ['scanQRCode'],
-                            success: function (res) {
-                                console.log(res);
+                    console.log("appId："+JSON.stringify(var1));
+                    wx.addCard({
+                        cardList: [
+                            {
+                                cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
+                                cardExt: '{"code": "", "openid": "", "timestamp": "'+var1.timestamp+'", "signature":"'+var1.signature+'"}'
                             }
-                        });
-                        wx.scanQRCode({
-                            needResult: 1,
-                            scanType: ["qrCode", "barCode"],
-                            success: function (res) {
-                                var result = res.resultStr;
-                                alert(result)
-
-                            },
-                        });
+                        ],
+                        success: function (res) {
+                            alert('已添加卡券：' + JSON.stringify(res.cardList));
+                        },
+                        cancel: function (res) {
+                            alert(JSON.stringify(res))
+                        }
                     });
+
 
                 },
                 error: function () {
@@ -120,6 +200,7 @@
                     return;
                 }
             });
+
         })
 
         $('#activateBtn').on('click', function () {

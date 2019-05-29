@@ -5,6 +5,7 @@ import com.github.binarywang.demo.wx.mp.result.GlobalEumn;
 import com.github.binarywang.demo.wx.mp.utils.JsonUtils;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
+import me.chanjar.weixin.common.bean.WxCardApiSignature;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.error.WxErrorException;
 import me.chanjar.weixin.mp.api.WxMpService;
@@ -13,8 +14,7 @@ import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
 
 import javax.servlet.http.HttpServletRequest;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.*;
 
 import static com.github.binarywang.demo.wx.mp.result.ResultMsg.ResultMsg;
 
@@ -30,13 +30,27 @@ public class myMapsend {
     private final WxMpService wxService;
 
     @RequestMapping("/activate")
-    public String selectUser(@RequestParam String opendId, ModelMap map) {
+    public String selectUser(@RequestParam String opendId, ModelMap map,HttpServletRequest request) {
 
+        //获取所有参数
+        Enumeration<String> e = request.getParameterNames();
+
+        //拼接所有参数
+        String data = "";
+        Map<String,String> mapParams=new HashMap<String, String>();
+        while (e.hasMoreElements()) {
+            String paramName = (String) e.nextElement();
+            String paramValue = request.getParameterValues(paramName)[0];
+            data = data + paramName + "=" + paramValue + "&";
+            mapParams.put(paramName,paramValue);
+        }
+        data=data.equals("")? "":data.substring(0, data.lastIndexOf("&"));
+        log.info(String.format("所有的请求参数 %s",data));
         try {
             log.info(String.format("我是来自%s这里的请求",opendId));
             map.put("opendId", opendId);
-        } catch (Exception e) {
-            e.printStackTrace();
+        } catch (Exception e1) {
+            e1.printStackTrace();
         }
         return "activate";
     }
@@ -63,6 +77,26 @@ public class myMapsend {
             WxJsapiSignature wxJsapiSignature=this.wxService.createJsapiSignature(signUrl);
             log.info("我是wxJsapiSignature{}",wxJsapiSignature);
             return ResultMsg(JsonUtils.toJson(wxJsapiSignature));
+        } catch (WxErrorException e) {
+            e.printStackTrace();
+        }
+        return ResultMsg(GlobalEumn.JSSDK_SIGN_FAIL);
+    }
+
+
+    @PostMapping("/getJsCardconfig")
+    @ResponseBody
+    public String getJsCardconfig(HttpServletRequest request,@RequestParam String card_id) {
+
+        try {
+            String JsapiCardTicket=this.wxService.getCardService().getCardApiTicket();
+            log.info("我是JsapiTicket   {}",JsapiCardTicket);
+
+            //app_id, card_id, card_type, code, openid, location_id
+            String[] param = {"wx751d1e03d0988cb3",card_id};
+            WxCardApiSignature cardApiSignature = this.wxService.getCardService().createCardApiSignature(param);
+            log.info("cardApiSignature{}",cardApiSignature);
+            return ResultMsg(JsonUtils.toJson(cardApiSignature));
         } catch (WxErrorException e) {
             e.printStackTrace();
         }

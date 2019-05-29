@@ -1,5 +1,6 @@
 package com.github.binarywang.demo.wx.mp.handler;
 
+import com.github.binarywang.demo.wx.mp.builder.TextBuilder;
 import com.github.binarywang.demo.wx.mp.utils.JsonUtils;
 
 import com.github.binarywang.demo.wx.mp.utils.JsonUtils;
@@ -38,17 +39,15 @@ public class MemberCardHandler extends AbstractHandler {
         jsonObject.addProperty("card_id", cardId);
         jsonObject.addProperty("code", userCode);
 
-
-
        String result= wxMpService.post(
-                 String.format("https://api.weixin.qq.com/card/membercard/userinfo/get?access_token=%s",wxMpService.getAccessToken()),
+                 "https://api.weixin.qq.com/card/membercard/userinfo/get",
            jsonObject.toString());
 
         this.logger.info("解析出来的会员卡内容：{}", result);
 
+        String content = "收到信息内容：" + JsonUtils.toJson(wxMessage)+"\n 解析出来的内容 ： "+result;
 
-
-        return null;
+        return new TextBuilder().build(content, wxMessage, wxMpService);
     }
 }
 
