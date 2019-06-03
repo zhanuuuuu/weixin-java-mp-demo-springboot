@@ -6,6 +6,8 @@ package com.github.binarywang.demo.wx.mp.result;
 public enum  GlobalEumn implements GlobalInfo {
 
     SUCCESS(1001, "成功"),
+    CARD_STUTAS_FAIL(1005, "卡卷不满足核销状态"),
+    CARD_CONSUME_FAIL(1006, "卡卷核销失败"),
     JSSDK_SIGN_FAIL(1007, "JS-SDK签名失败"),
     JSON_ANALYZING_FAIL(1008, "服务端json返回时解析失败");
 

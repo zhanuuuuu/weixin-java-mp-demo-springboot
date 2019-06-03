@@ -8,7 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxCardApiSignature;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
 import me.chanjar.weixin.common.error.WxErrorException;
+import me.chanjar.weixin.common.util.RandomUtils;
 import me.chanjar.weixin.mp.api.WxMpService;
+import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
@@ -34,7 +36,6 @@ public class myMapsend {
 
         //获取所有参数
         Enumeration<String> e = request.getParameterNames();
-
         //拼接所有参数
         String data = "";
         Map<String,String> mapParams=new HashMap<String, String>();
@@ -89,14 +90,20 @@ public class myMapsend {
     public String getJsCardconfig(HttpServletRequest request,@RequestParam String card_id) {
 
         try {
-            String JsapiCardTicket=this.wxService.getCardService().getCardApiTicket();
-            log.info("我是JsapiTicket   {}",JsapiCardTicket);
-
-            //app_id, card_id, card_type, code, openid, location_id
-            String[] param = {"wx751d1e03d0988cb3",card_id};
-            WxCardApiSignature cardApiSignature = this.wxService.getCardService().createCardApiSignature(param);
-            log.info("cardApiSignature{}",cardApiSignature);
-            return ResultMsg(JsonUtils.toJson(cardApiSignature));
+            long timestamp = System.currentTimeMillis() / 1000L;
+            String nonceStr = RandomUtils.getRandomStr();
+            String JsapiCardTicket=this.wxService.getCardService().getCardApiTicket(false);
+            WxCardApiSignature cardSignature = new WxCardApiSignature();
+            cardSignature.setNonceStr(nonceStr);
+            cardSignature.setTimestamp(Long.valueOf(timestamp));
+            cardSignature.setCardId(card_id);
+            //签名必须按照这个顺序  否则无效
+            String signdata=cardSignature.getTimestamp()+JsapiCardTicket+cardSignature.getNonceStr()
+                +cardSignature.getCardId();
+            String Signature= DigestUtils.sha1Hex(signdata.trim());
+            cardSignature.setSignature(Signature);
+            log.info("cardApiSignature{}  JsapiCardTicket{} ",cardSignature,JsapiCardTicket);
+            return ResultMsg(JsonUtils.toJson(cardSignature));
         } catch (WxErrorException e) {
             e.printStackTrace();
         }

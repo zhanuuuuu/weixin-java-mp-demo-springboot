@@ -67,7 +67,8 @@
     $(function () {
         var rootUrl=[[${#httpServletRequest.getContextPath()}]];
         var opendId=[[${opendId}]];
-        var card_id="pgOfAwsyCZK29C3mm80CwHIiy8Iw";
+        //优惠卷
+        var card_id="pgOfAwrdq-3NSJ7VWaC2L0lEgWaE";
         console.log("当前项目的路径"+rootUrl);
         console.log("当前项目的opendId"+opendId);
 
@@ -87,7 +88,7 @@
                 //签名
                 console.log("appId："+var1.appId);
                 wx.config({
-                    debug: true,
+                    debug: false,
                     appId: var1.appId,
                     timestamp: var1.timestamp,
                     nonceStr: var1.nonceStr,
@@ -181,8 +182,8 @@
                     wx.addCard({
                         cardList: [
                             {
-                                cardId: 'pDF3iY9tv9zCGCj4jTXFOo1DxHdo',
-                                cardExt: '{"code": "", "openid": "", "timestamp": "'+var1.timestamp+'", "signature":"'+var1.signature+'"}'
+                                cardId: card_id,
+                                cardExt: '{"nonce_str": "'+var1.nonceStr+'","timestamp": "'+var1.timestamp+'", "signature":"'+var1.signature+'"}'
                             }
                         ],
                         success: function (res) {

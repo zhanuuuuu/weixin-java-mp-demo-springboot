@@ -19,9 +19,15 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.context.request.RequestContextHolder;
+import org.springframework.web.context.request.ServletRequestAttributes;
 
 import javax.servlet.http.HttpServletRequest;
 import javax.xml.ws.Action;
+
+import java.util.Enumeration;
+import java.util.HashMap;
+import java.util.Map;
 
 import static com.github.binarywang.demo.wx.mp.result.ResultMsg.ResultMsg;
 
@@ -39,6 +45,25 @@ public class WxRedirectController {
     @RequestMapping("/greet")
     public String greetUser(@PathVariable String appid, @RequestParam String code, ModelMap map) {
 
+        //拼接所有参数
+        String data = "";
+        ServletRequestAttributes servletRequestAttributes =
+            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes != null) {
+            HttpServletRequest request = servletRequestAttributes.getRequest();
+            //获取所有参数
+            Enumeration<String> e = request.getParameterNames();
+
+            Map<String, String> mapParams = new HashMap<String, String>();
+            while (e.hasMoreElements()) {
+                String paramName = (String) e.nextElement();
+                String paramValue = request.getParameterValues(paramName)[0];
+                data = data + paramName + "=" + paramValue + "&";
+                mapParams.put(paramName, paramValue);
+            }
+            data=data.equals("")? "":data.substring(0, data.lastIndexOf("&"));
+            log.info(String.format("所有的请求参数 %s",data));
+        }
         if (!this.wxService.switchover(appid)) {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }
@@ -48,15 +73,50 @@ public class WxRedirectController {
             WxMpUser user = wxService.oauth2getUserInfo(accessToken, null);
             log.info("我是{}  {}  {}",appid,code,user.toString());
             map.put("user", user);
-        } catch (WxErrorException e) {
-            e.printStackTrace();
+        } catch (WxErrorException e1) {
+            e1.printStackTrace();
         }
 
         return "greet_user";
     }
 
+
+    @RequestMapping("/card")
+    public String card(@PathVariable String appid,ModelMap map) {
+
+        //拼接所有参数
+        String data = "";
+        ServletRequestAttributes servletRequestAttributes =
+            (ServletRequestAttributes) RequestContextHolder.getRequestAttributes();
+        if (servletRequestAttributes != null) {
+            HttpServletRequest request = servletRequestAttributes.getRequest();
+            //获取所有参数
+            Enumeration<String> e = request.getParameterNames();
+
+            Map<String, String> mapParams = new HashMap<String, String>();
+            while (e.hasMoreElements()) {
+                String paramName = (String) e.nextElement();
+                String paramValue = request.getParameterValues(paramName)[0];
+                data = data + paramName + "=" + paramValue + "&";
+                mapParams.put(paramName, paramValue);
+            }
+            data=data.equals("")? "":data.substring(0, data.lastIndexOf("&"));
+            log.info(String.format("所有的请求参数 %s",data));
+        }
+        if (!this.wxService.switchover(appid)) {
+            throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
+        }
+        try {
+            map.put("user", data);
+        } catch (Exception e1) {
+            e1.printStackTrace();
+        }
+        return "user2";
+    }
+
     @RequestMapping("/greetbefore")
     public String greetbefore(@PathVariable String appid) {
+
 
         if (!this.wxService.switchover(appid)) {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
@@ -82,7 +142,20 @@ public class WxRedirectController {
         System.out.println("获取项目名="+request.getContextPath());
         System.out.println("获取参数="+request.getQueryString());
         System.out.println("获取全路径="+request.getRequestURL());
+        //获取所有参数
+        Enumeration<String> e = request.getParameterNames();
 
+        //拼接所有参数
+        String data = "";
+        Map<String,String> mapParams=new HashMap<String, String>();
+        while (e.hasMoreElements()) {
+            String paramName = (String) e.nextElement();
+            String paramValue = request.getParameterValues(paramName)[0];
+            data = data + paramName + "=" + paramValue + "&";
+            mapParams.put(paramName,paramValue);
+        }
+        data=data.equals("")? "":data.substring(0, data.lastIndexOf("&"));
+        log.info(String.format("所有的请求参数 %s",data));
         if (!this.wxService.switchover(appid)) {
             throw new IllegalArgumentException(String.format("未找到对应appid=[%s]的配置，请核实！", appid));
         }

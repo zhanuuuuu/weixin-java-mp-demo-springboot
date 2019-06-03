@@ -1,0 +1,48 @@
+{
+    "card": {
+        "card_type": "GENERAL_COUPON",
+        "general_coupon": {
+            "base_info": {
+                "logo_url": "http://mmbiz.qpic.cn/mmbiz_png/8vPUZq7OF08LJt3AOSeal3E86vvlAcvztkBxCPbt8ib4wya5dJsaicoEKSRNoLJJjdibzDMjkGcmY3tGNcvxp2KWA/0",
+                "brand_name": "北京华隆",
+                "code_type": "CODE_TYPE_QRCODE",
+                "title": "20元优惠卷",
+                "color": "Color100",
+                "notice": "使用时向服务员出示此券",
+                "service_phone": "020-88888888",
+                "description": "优惠说明 \n 1.这里测试 \n 2.没人限领3张",
+                "date_info": {
+                    "type": "DATE_TYPE_FIX_TERM",
+                    "fixed_begin_term": 0,
+                    "fixed_term": 30,
+                    "end_timestamp":1561888237
+                },
+                "sku": {
+                    "quantity": 500000
+                },
+                "use_limit": 100,
+                "get_limit": 3,
+                "use_custom_code": false,
+                "bind_openid": false,
+                "can_share": true,
+                "can_give_friend": true,
+                "center_url": "立即使用",
+                "custom_url_name": "立即使用2",
+                "custom_url": "http://aaa.warelucent.cc/mpwx/GetWX_CODE?action=5",
+                "custom_url_sub_title": "6个汉字tips",
+                "promotion_url_name": "更多优惠",
+                "promotion_url": "http://aaa.warelucent.cc/hlwxmp/wx/redirect/wx751d1e03d0988cb3/card",
+                "source": "不知道"
+            },
+            "advanced_info": {
+                "abstract": {
+                    "abstract": "优惠劵封面介绍",
+                    "icon_url_list": [
+                        "http://mmbiz.qpic.cn/mmbiz_png/8vPUZq7OF08LJt3AOSeal3E86vvlAcvzclic8jGIIicagj5Jav7yAWreopFHwxUKX2Rr8UVueGgOP3RpIialrbXpw/0"
+                    ]
+                }
+            },
+            "default_detail": "使用须知 \n 1.这里测试优惠券专用，填写优惠详情 \n 2.没人限领3张"
+        }
+    }
+}

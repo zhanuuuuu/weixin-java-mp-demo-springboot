@@ -1,0 +1,48 @@
+{
+    "card": {
+        "card_type": "MEMBER_CARD",
+        "member_card": {
+            "background_pic_url": "http://mmbiz.qpic.cn/mmbiz_png/8vPUZq7OF08LJt3AOSeal3E86vvlAcvzclic8jGIIicagj5Jav7yAWreopFHwxUKX2Rr8UVueGgOP3RpIialrbXpw/0",
+            "base_info": {
+                "logo_url": "http://mmbiz.qpic.cn/mmbiz_png/8vPUZq7OF08LJt3AOSeal3E86vvlAcvztkBxCPbt8ib4wya5dJsaicoEKSRNoLJJjdibzDMjkGcmY3tGNcvxp2KWA/0",
+                "brand_name": "北京华隆创信",
+                "code_type": "CODE_TYPE_NONE",
+                "title": "北京华隆创信会员卡",
+                "color": "Color010",
+                "notice": "使用时向服务员出示此券",
+                "service_phone": "020-88888888",
+                "description": "1.会员可以在商城换区对应价值商品 \n 2.积分每年最后一天清零 \n 3.每人限领一张",
+                "date_info": {
+                    "type": "DATE_TYPE_PERMANENT"
+                },
+                "sku": {
+                    "quantity": 50000000
+                },
+                "get_limit": 1,
+                "use_custom_code": false,
+                "can_give_friend": false,
+                "custom_url_name": "立即使用",
+                "custom_url": "http://aaa.warelucent.cc/mpwx/GetWX_CODE?action=5",
+                "custom_url_sub_title": "6个汉字tips",
+                "promotion_url_name": "营销入口1",
+                "promotion_url": "http://aaa.warelucent.cc/mpwx/GetWX_CODE?action=5",
+                "need_push_on_view": true
+            },
+            "supply_bonus": true,
+            "bonus_url": "http://aaa.warelucent.cc/mpwx/GetWX_CODE?action=5",
+            "supply_balance": false,
+            "prerogative": "1.会员可以在商城换区对应价值商品 \n 2.积分每年最后一天清零 \n 3.每人限领一张",
+            "auto_activate": true,
+            "custom_field1": {
+                "name_type": "FIELD_NAME_TYPE_LEVEL",
+                "url": "http://aaa.warelucent.cc/mpwx/GetWX_CODE?action=5"
+            },
+            "custom_cell1": {
+                "name": "使用入口2",
+                "tips": "激活后显示",
+                "url": "http://aaa.warelucent.cc/mpwx/GetWX_CODE?action=5"
+            },
+            "discount": 0
+        }
+    }
+}
