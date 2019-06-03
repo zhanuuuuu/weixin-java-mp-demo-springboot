@@ -46,6 +46,8 @@ public class memberCardConntroller {
                 JsonObject json = (new JsonParser()).parse(result).getAsJsonObject();
                 if(json.has("errcode") && json.get("errcode").getAsInt()==0){
                     String openid=json.get("openid").toString();
+
+
                     return ResultMsg(result);
                 }else{
                     return ResultMsg(GlobalEumn.CARD_CONSUME_FAIL);
