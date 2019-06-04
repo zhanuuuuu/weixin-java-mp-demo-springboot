@@ -130,7 +130,7 @@ public class HttpUtils {
 
 
     //模拟文件发送   这里需要文件地址  url
-    public static String postForUploadStream(String url, String filePath) throws IOException {
+    public static String postImageStream(String url, String filePath) throws IOException {
         log.info("------------------------------HttpClient POST开始-------------------------------");
         log.info("POST:" + url);
         log.info("filePath:" + filePath);

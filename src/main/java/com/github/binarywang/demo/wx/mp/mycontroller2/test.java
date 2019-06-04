@@ -1,4 +1,4 @@
-package com.github.binarywang.demo.wx.mp.mycontroller;
+package com.github.binarywang.demo.wx.mp.mycontroller2;
 
 import org.apache.commons.codec.digest.DigestUtils;
 

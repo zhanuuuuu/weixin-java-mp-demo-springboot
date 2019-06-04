@@ -1,4 +1,4 @@
-package com.github.binarywang.demo.wx.mp.mycontroller;
+package com.github.binarywang.demo.wx.mp.mycontroller2;
 
 import com.github.binarywang.demo.wx.mp.domain.User;
 import com.github.binarywang.demo.wx.mp.result.GlobalEumn;
