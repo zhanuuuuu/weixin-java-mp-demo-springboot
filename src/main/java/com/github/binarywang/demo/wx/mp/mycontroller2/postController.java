@@ -9,10 +9,10 @@ import me.chanjar.weixin.mp.bean.kefu.WxMpKefuMessage;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.client.RestClientException;
+import org.springframework.web.client.RestTemplate;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 
@@ -23,9 +23,39 @@ import javax.servlet.http.HttpServletRequest;
 @AllArgsConstructor
 @Controller
 @RequestMapping("/post")
+@ApiIgnore//使用该注解忽略这个API
 public class postController {
 
     private final WxMpService wxService;
+
+    private final RestTemplate restTemplate;
+
+    @RequestMapping(value = "/getRestTemplate",method = RequestMethod.POST)
+    @ResponseBody
+    public String getRestTemplate(HttpServletRequest request) {
+
+        String url = request.getScheme()+"://"+ request.getServerName()
+            +(request.getServerPort()==80 ? "":":"+request.getServerPort());//+request.getRequestURI()
+
+        log.info("我是访问路径 {} ",url);
+        url=url+request.getContextPath()+"/post/getTocken";
+        log.info("我是访问路径 {} ",url);
+
+        String result="获取数据失败";
+        try{
+            result=restTemplate.getForObject(url,String.class);
+
+            return String.format("restTemplate 获取到的结果是 :  %s",result);
+        }catch (RestClientException e){
+            e.printStackTrace();
+            result=e.getMessage();
+            log.info("restTemplate访问接口出错了 {}",e.getMessage());
+
+        }
+        return String.format("restTemplate 获取到的结果是 :  %s",result);
+
+
+    }
 
     @RequestMapping("/getTocken")
     @ResponseBody

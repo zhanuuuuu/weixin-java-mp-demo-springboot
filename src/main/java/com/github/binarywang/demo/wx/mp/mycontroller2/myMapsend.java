@@ -14,6 +14,7 @@ import org.apache.commons.codec.digest.DigestUtils;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.ModelMap;
 import org.springframework.web.bind.annotation.*;
+import springfox.documentation.annotations.ApiIgnore;
 
 import javax.servlet.http.HttpServletRequest;
 import java.util.*;
@@ -27,6 +28,7 @@ import static com.github.binarywang.demo.wx.mp.result.ResultMsg.ResultMsg;
 @AllArgsConstructor
 @Controller
 @RequestMapping("/mapper")
+@ApiIgnore//使用该注解忽略这个API
 public class myMapsend {
 
     private final WxMpService wxService;

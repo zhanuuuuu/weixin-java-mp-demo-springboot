@@ -1,4 +1,4 @@
-package com.github.binarywang.demo.wx.mp;
+package com.github.binarywang.demo.wx.mp.config;
 
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -33,10 +33,10 @@ public class Swagger2 {
     private ApiInfo apiInfo() {
         return new ApiInfoBuilder()
                 //页面标题
-                .title("小程序API")
+                .title("微信公众号")
                 //创建人
                 .contact(new Contact(
-                        "Mr. Zhang", "", ""))
+                "Mr. Zhang", "", ""))
                 //版本号
                 .version("1.0.0")
                 //描述

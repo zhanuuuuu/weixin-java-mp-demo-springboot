@@ -10,6 +10,7 @@ import org.springframework.stereotype.Service;
 
 @Data
 @ConfigurationProperties(prefix = "image.download")
+//一步到位 省事
 @Service
 public class ImageUrl {
     private String url;

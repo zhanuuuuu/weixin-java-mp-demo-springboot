@@ -3,6 +3,7 @@ package com.github.binarywang.demo.wx.mp.result;
 import com.github.binarywang.demo.wx.mp.domain.User;
 import com.github.binarywang.demo.wx.mp.utils.JsonUtils;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -11,7 +12,7 @@ import java.util.regex.Pattern;
 /**
  * Created by Administrator on 2019-05-24.
  */
-public class ResultMsg {
+public class ResultMsg implements Serializable {
 
     private String code;
 

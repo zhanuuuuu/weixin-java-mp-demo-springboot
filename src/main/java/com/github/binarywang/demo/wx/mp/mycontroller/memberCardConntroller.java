@@ -7,6 +7,7 @@ import com.github.binarywang.demo.wx.mp.utils.DownloadPicFromURL;
 import com.github.binarywang.demo.wx.mp.utils.JsonUtils;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import io.swagger.annotations.*;
 import lombok.AllArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import me.chanjar.weixin.common.bean.WxJsapiSignature;
@@ -26,6 +27,7 @@ import static com.github.binarywang.demo.wx.mp.utils.HttpUtils.postImageStream;
 /**
  * Created by Administrator on 2019-05-29.
  */
+@Api(value = "API 微信公众号卡卷对接", description = "微信公众号优惠卷接口梳理文档")
 @Slf4j
 @AllArgsConstructor
 @Controller
@@ -35,10 +37,19 @@ public class memberCardConntroller {
     private final WxMpService wxService;
 
     private final ImageUrl image;
-    /**
-     *  卡卷核销接口
-     * @return
-     */
+
+    @ApiOperation(value="核销优惠卷", notes="根据cardId和code核销优惠卷")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "cardId", value = "优惠卷类别cardId",paramType ="query" ,required = true,dataType = "string"),
+        @ApiImplicitParam(name = "code", value = "类别下的单张卡的code码",paramType ="query" ,required = true,dataType = "string")
+    })
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Successful — 请求已完成",reference="77777",responseContainer="8888888"),
+        @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+        @ApiResponse(code = 403, message = "服务器拒绝请求"),
+        @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+        @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+        @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @PostMapping("/card/code/consume")
     @ResponseBody
     public String consumeCode(@PathVariable String appid,@RequestParam(name = "cardId",required = true) String cardId,
@@ -73,12 +84,18 @@ public class memberCardConntroller {
         return ResultMsg(GlobalEumn.CARD_CONSUME_FAIL);
     }
 
-    /**
-     *   查询卡卷
-     * @param cardId
-     * @param code
-     * @return
-     */
+    @ApiOperation(value="优惠卷信息查询", notes="这个接口不需要其实,因为我的核销接口已经做了查询状态的判断")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "cardId", value = "优惠卷类别cardId",paramType ="query" ,required = true,dataType = "string",defaultValue = ""),
+        @ApiImplicitParam(name = "code", value = "类别下的单张卡的code码",paramType ="query" ,required = true,dataType = "string",defaultValue = "")
+    })
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Successful — 请求已完成",reference="77777",responseContainer="8888888"),
+        @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+        @ApiResponse(code = 403, message = "服务器拒绝请求"),
+        @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+        @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+        @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @PostMapping("/card/code/get")
     @ResponseBody
     public String getCode(@PathVariable String appid,@RequestParam(name = "cardId",required = true) String cardId,
@@ -98,9 +115,15 @@ public class memberCardConntroller {
         return ResultMsg(GlobalEumn.CARD_CONSUME_FAIL);
     }
 
-    /**
-     *   创建卡卷
-     */
+    @ApiOperation(value="创建优惠卷JSON格式", notes="创建优惠卷JSON格式")
+
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Successful — 请求已完成",reference="77777",responseContainer="8888888"),
+        @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+        @ApiResponse(code = 403, message = "服务器拒绝请求"),
+        @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+        @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+        @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @PostMapping("/card/code/createByJson")
     @ResponseBody
     public String createCode(@PathVariable String appid,@RequestBody String json) {
@@ -119,12 +142,17 @@ public class memberCardConntroller {
         }
     }
 
-    /**
-     *  上传图片
-     * @param appid
-     * @param imgUrl  网络路径
-     * @return
-     */
+    @ApiOperation(value="上传图片到微信服务端", notes="根据图片链接地址上传图片到微信服务端")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "imgUrl", value = "图片的链接",paramType ="query" ,required = true,dataType = "string")
+    })
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Successful — 请求已完成",reference="77777",responseContainer="8888888"),
+        @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+        @ApiResponse(code = 403, message = "服务器拒绝请求"),
+        @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+        @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+        @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @PostMapping("/card/media/uploadimg")
     @ResponseBody
     public String uploadImg(@PathVariable String appid,@RequestParam(name = "imgUrl",required = true) String imgUrl) {
@@ -156,7 +184,17 @@ public class memberCardConntroller {
         }
     }
 
-
+    @ApiOperation(value="解密卡卷的encryptCode", notes="解密卡卷的encryptCode获真是的code码")
+    @ApiImplicitParams({
+        @ApiImplicitParam(name = "encryptCode", value = "卡号加密encryptCode码",paramType ="query" ,required = true,dataType = "string")
+    })
+    @ApiResponses({
+        @ApiResponse(code = 200, message = "Successful — 请求已完成",reference="77777",responseContainer="8888888"),
+        @ApiResponse(code = 400, message = "请求中有语法问题，或不能满足请求"),
+        @ApiResponse(code = 403, message = "服务器拒绝请求"),
+        @ApiResponse(code = 401, message = "未授权客户机访问数据"),
+        @ApiResponse(code = 404, message = "服务器找不到给定的资源；文档不存在"),
+        @ApiResponse(code = 500, message = "服务器不能完成请求")})
     @PostMapping("/card/code/decrypt")
     @ResponseBody
     public String codeDcrypt(@PathVariable String appid,@RequestParam(name = "encryptCode",required = true) String encryptCode) {
