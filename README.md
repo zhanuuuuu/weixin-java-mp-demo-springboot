@@ -58,12 +58,13 @@ wx:
 
 ## 特别说明：	
 1. 这是我集成好的我们公司的微信公众号项目 里面已经配置了数据库（sql server2008）的连接
-```      
-          <!--SQL Server数据库驱动依赖, mvn本地下载安装 
-          这个包需要自己网上下载 然后安装到本地仓库 最后引用到这里-->
-          <dependency>
-              <groupId>com.microsoft.sqlserver</groupId>
-              <artifactId>sqljdbc42</artifactId>
-              <version>4.2</version>
-          </dependency>
-```
+    ```      
+              <!--SQL Server数据库驱动依赖, mvn本地下载安装 
+              这个包需要自己网上下载 然后安装到本地仓库 最后引用到这里-->
+              <dependency>
+                  <groupId>com.microsoft.sqlserver</groupId>
+                  <artifactId>sqljdbc42</artifactId>
+                  <version>4.2</version>
+              </dependency>
+    ```
+2.接口访问可以使用RestTemplate
