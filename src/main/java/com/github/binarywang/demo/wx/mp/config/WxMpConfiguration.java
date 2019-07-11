@@ -72,10 +72,12 @@ public class WxMpConfiguration {
         newRouter.rule().async(false).msgType(XmlMsgType.EVENT)
             .event(WxMpEventConstants.CustomerService.KF_CREATE_SESSION)
             .handler(this.kfSessionHandler).end();
+
         newRouter.rule().async(false).msgType(XmlMsgType.EVENT)
             .event(WxMpEventConstants.CustomerService.KF_CLOSE_SESSION)
             .handler(this.kfSessionHandler)
             .end();
+
         newRouter.rule().async(false).msgType(XmlMsgType.EVENT)
             .event(WxMpEventConstants.CustomerService.KF_SWITCH_SESSION)
             .handler(this.kfSessionHandler).end();
