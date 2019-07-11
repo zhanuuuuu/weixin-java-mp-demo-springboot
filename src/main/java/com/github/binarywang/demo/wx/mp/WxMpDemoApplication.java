@@ -18,6 +18,8 @@ public class WxMpDemoApplication extends SpringBootServletInitializer {
         return application.sources(WxMpDemoApplication.class);
     }
 
+
+
     public static void main(String[] args) {
         SpringApplication.run(WxMpDemoApplication.class, args);
     }
